@@ -7,7 +7,7 @@ import com.example.guestbook.entity.Guestbook;
 
 public interface GuestbookService {
 
-    
+    GuestbookDTO read(Long gno);
     Long register(GuestbookDTO dto);
     PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
 
