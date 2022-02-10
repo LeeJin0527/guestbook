@@ -6,6 +6,8 @@ import com.example.guestbook.dto.PageResultDTO;
 import com.example.guestbook.entity.Guestbook;
 
 public interface GuestbookService {
+
+    
     Long register(GuestbookDTO dto);
     PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
 
