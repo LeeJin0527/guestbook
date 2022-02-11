@@ -100,9 +100,9 @@ public class GuestbookServiceImpl implements GuestbookService{
             conditionBuilder.or(qGuestbook.content.contains(keyword));
         }
 
-        if (type.contains("w")){
-            conditionBuilder.or(qGuestbook.writer.contains(keyword));
-        }
+//        if (type.contains("w")){
+//            conditionBuilder.or(qGuestbook.writer.contains(keyword));
+//        }
 
         booleanBuilder.and(conditionBuilder);
         return booleanBuilder;
