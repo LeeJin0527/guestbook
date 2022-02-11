@@ -10,7 +10,12 @@
         <h1 class="mt-4">GuestBook Modify Page</h1>
 
         <form action="/guestbook/modify" method="post">
+
+            <!--페이지 번호  -->
             <input type="hidden" name="page" th:value="${requestDTO.page}">
+            <input type="hidden" name="type" th:value="${requestDTO.type}" >
+            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}" >
+
 
             <div class="form-group">
                 <label >Gno</label>
@@ -18,7 +23,7 @@
             </div>
 
             <div class="form-group">
-                <label >Title</label>>
+                <label>Title</label>
                 <input type="text" class="form-control" name="title" th:value="${dto.title}" >
             </div>
             <div class="form-group">
@@ -54,7 +59,7 @@
 
                 actionForm
                     .attr("action", "/guestbook/remove")
-                    .attr("method", "post");
+                    .attr("method","post");
 
                 actionForm.submit();
 
@@ -72,12 +77,20 @@
                     .submit();
             });
 
-            $(".btn-list").click(function() {
+            $(".listBtn").click(function() {
 
-                var pageInfo = $("input[name='page']");
+                //var pageInfo = $("input[name='page']");
+                var page = $("input[name='page']");
+                var type = $("input[name='type']");
+                var keyword = $("input[name='keyword']");
 
-                actionForm.empty();
-                actionForm.append(pageInfo);
+                actionForm.removeData(); //form 태그의 모든 내용을 지우고
+
+                actionForm.append(page);
+                actionForm.append(type);
+                actionForm.append(keyword);
+
+
                 actionForm
                     .attr("action", "/guestbook/list")
                     .attr("method","get");

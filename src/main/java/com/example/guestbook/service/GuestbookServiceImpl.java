@@ -4,7 +4,10 @@ import com.example.guestbook.dto.GuestbookDTO;
 import com.example.guestbook.dto.PageRequestDTO;
 import com.example.guestbook.dto.PageResultDTO;
 import com.example.guestbook.entity.Guestbook;
+import com.example.guestbook.entity.QGuestbook;
 import com.example.guestbook.repository.GuestbookRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -22,9 +25,6 @@ public class GuestbookServiceImpl implements GuestbookService{
 
     private final GuestbookRepository repository;
 
-
-
-
     @Override
     public Long register(GuestbookDTO dto){
         log.info("DTO-------------------");
@@ -40,7 +40,8 @@ public class GuestbookServiceImpl implements GuestbookService{
     public PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO) {
         Pageable pageable = requestDTO.getPageable(Sort.by("gno").descending());
 
-        Page<Guestbook> result = repository.findAll(pageable);
+        BooleanBuilder booleanBuilder = getSearch(requestDTO);
+        Page<Guestbook> result = repository.findAll(booleanBuilder, pageable);
 
         Function<Guestbook, GuestbookDTO> fn = (entity ->entityToDTO(entity));
         return new PageResultDTO<>(result, fn );
@@ -60,14 +61,50 @@ public class GuestbookServiceImpl implements GuestbookService{
 
     @Override
     public void modify(GuestbookDTO dto) {
+
+        //업데이트 하는 항목은 '제목', '내용'
+
         Optional<Guestbook> result = repository.findById(dto.getGno());
-        if (result.isPresent()){
+
+        if(result.isPresent()){
+
             Guestbook entity = result.get();
 
             entity.changeTitle(dto.getTitle());
             entity.changeContent(dto.getContent());
 
             repository.save(entity);
+
         }
+    }
+
+    private BooleanBuilder getSearch(PageRequestDTO requestDTO){
+        String type = requestDTO.getType();
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QGuestbook qGuestbook = QGuestbook.guestbook;
+        String keyword = requestDTO.getKeyword();
+        BooleanExpression expression = qGuestbook.gno.gt(0L);
+
+        booleanBuilder.and(expression);
+
+        if(type == null || type.trim().length() == 0){
+            return booleanBuilder;
+        }
+
+        BooleanBuilder conditionBuilder = new BooleanBuilder();
+        if (type.contains("t")){
+            conditionBuilder.or(qGuestbook.title.contains(keyword));
+        }
+
+        if (type.contains("c")){
+            conditionBuilder.or(qGuestbook.content.contains(keyword));
+        }
+
+        if (type.contains("w")){
+            conditionBuilder.or(qGuestbook.writer.contains(keyword));
+        }
+
+        booleanBuilder.and(conditionBuilder);
+        return booleanBuilder;
     }
 }
