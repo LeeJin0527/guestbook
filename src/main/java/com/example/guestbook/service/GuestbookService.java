@@ -18,7 +18,7 @@ public interface GuestbookService {
                 .gno(dto.getGno())
                 .title(dto.getTitle())
                 .content(dto.getContent())
-                .writer(dto.getWriter())
+//                .writer(dto.getWriter())
                 .build();
         return entity;
     }
@@ -28,7 +28,7 @@ public interface GuestbookService {
                 .gno(entity.getGno())
                 .title(entity.getTitle())
                 .content(entity.getContent())
-                .writer(entity.getWriter())
+//                .writer(entity.getWriter())
                 .regDate(entity.getRegDate())
                 .modDate(entity.getModDate())
                 .build();
