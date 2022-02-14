@@ -16,6 +16,7 @@ public interface GuestbookService {
     void removeWithReplies(Long gno);
 
     void modify(GuestbookDTO dto);
+
     default Guestbook dtoToEntity(GuestbookDTO dto){
         Member member  = Member.builder().email(dto.getWriterEmail()).build();
         Guestbook guestbook  = Guestbook.builder()

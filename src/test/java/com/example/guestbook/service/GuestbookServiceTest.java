@@ -7,6 +7,7 @@ import com.example.guestbook.entity.Guestbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,9 +57,22 @@ public class GuestbookServiceTest {
 
     @Test
     public void testRemove(){
-        Long gno = 411L;
+        Long gno = 2L;
         service.removeWithReplies(gno);
     }
+
+    @Test
+    public void testModify() {
+        GuestbookDTO guestbookDTO = GuestbookDTO.builder()
+                .gno(3L)
+                .title("제목 변경합니다 ~~~~~")
+                .content("내용 변경합니다 ")
+                .build();
+        service.modify(guestbookDTO);
+    }
+
+
+
 
     @Test
     public void testSearch(){
