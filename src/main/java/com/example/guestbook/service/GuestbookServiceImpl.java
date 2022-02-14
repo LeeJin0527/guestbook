@@ -85,21 +85,24 @@ public class GuestbookServiceImpl implements GuestbookService{
         repository.deleteById(gno);
     }
 
+    @Transactional
     @Override
     public void modify(GuestbookDTO dto) {
 
         //업데이트 하는 항목은 '제목', '내용'
 
-        Optional<Guestbook> result = repository.findById(dto.getGno());
+//        Optional<Guestbook> result = repository.findById(dto.getGno());
 
-        if(result.isPresent()){
+        Guestbook guestbook = repository.getOne(dto.getGno());
+        if(guestbook != null){
 
-            Guestbook entity = result.get();
+            System.out.println(guestbook);
+//            Guestbook entity = result.get();
+            System.out.println(dto.getTitle().getClass().getName());
+            guestbook.changeTitle(dto.getTitle());
+            guestbook.changeContent(dto.getContent());
 
-            entity.changeTitle(dto.getTitle());
-            entity.changeContent(dto.getContent());
-
-            repository.save(entity);
+            repository.save(guestbook);
 
         }
     }
