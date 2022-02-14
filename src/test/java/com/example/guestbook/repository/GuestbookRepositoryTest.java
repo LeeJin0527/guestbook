@@ -33,14 +33,14 @@ public class GuestbookRepositoryTest {
         IntStream.rangeClosed(1, 300).forEach( i-> {
 
             Member member = Member.builder()
-                    .email("user" + i + "aaa.com")
+                    .email("user" + i + "@aaa.com")
                     .build();
 
                 Guestbook guestbook = Guestbook.builder()
                         .title("Title..."+ i)
                         .content("Content..." + i)
                         .writer(member)
-                        .build();
+                    .build();
               guestbookRepository.save(guestbook);
         });
     }
@@ -77,14 +77,14 @@ public class GuestbookRepositoryTest {
         
         Page<Object[]> result = guestbookRepository.getGuestbookWithReplyCount(pageable);
         result.get().forEach(row ->{
-            Object [] arr = (Object[]) row;
+            Object [] arr = row;
             System.out.println(Arrays.toString(arr));
         });
     }
 
     @Test
     public void testRead3(){
-        Object result = guestbookRepository.getBoardByGno(30L);
+        Object result = guestbookRepository.getGuestbookByGno(30L);
         Object[] arr = (Object[]) result;
         System.out.println(Arrays.toString(arr));
     }

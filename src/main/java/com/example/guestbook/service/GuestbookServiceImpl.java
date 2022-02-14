@@ -4,8 +4,10 @@ import com.example.guestbook.dto.GuestbookDTO;
 import com.example.guestbook.dto.PageRequestDTO;
 import com.example.guestbook.dto.PageResultDTO;
 import com.example.guestbook.entity.Guestbook;
+import com.example.guestbook.entity.Member;
 import com.example.guestbook.entity.QGuestbook;
 import com.example.guestbook.repository.GuestbookRepository;
+import com.example.guestbook.repository.ReplyRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,9 +26,11 @@ import java.util.function.Function;
 @Service
 @Log4j2
 @RequiredArgsConstructor
+
 public class GuestbookServiceImpl implements GuestbookService{
 
     private final GuestbookRepository repository;
+    private final ReplyRepository replyRepository;
 
     @Override
     public Long register(GuestbookDTO dto){
@@ -37,25 +44,44 @@ public class GuestbookServiceImpl implements GuestbookService{
     }
 
     @Override
-    public PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO) {
-        Pageable pageable = requestDTO.getPageable(Sort.by("gno").descending());
-
-        BooleanBuilder booleanBuilder = getSearch(requestDTO);
-        Page<Guestbook> result = repository.findAll(booleanBuilder, pageable);
-
-        Function<Guestbook, GuestbookDTO> fn = (entity ->entityToDTO(entity));
-        return new PageResultDTO<>(result, fn );
+    public GuestbookDTO get(Long gno){
+        Object result = repository.getGuestbookByGno(gno);
+        Object[] arr = (Object[]) result;
+        return entityToDTO((Guestbook) arr[0], (Member) arr[1], (Long)arr[2]);
     }
 
     @Override
-    public GuestbookDTO read(Long gno) {
-        Optional<Guestbook> result = repository.findById(gno);
-        return result.isPresent()? entityToDTO(result.get()): null;
+    public PageResultDTO<GuestbookDTO, Object[]> getList(PageRequestDTO requestDTO) {
+//        Pageable pageable = requestDTO.getPageable(Sort.by("gno").descending());
+//
+//        BooleanBuilder booleanBuilder = getSearch(requestDTO);
+        Function<Object[], GuestbookDTO> fn = (en ->entityToDTO((Guestbook)en[0], (Member)en[1], (Long)en[2]));
+        Page<Object[]> result = repository.getGuestbookWithReplyCount(requestDTO.getPageable(Sort.by("gno").descending()));
 
+
+        return new PageResultDTO<>(result, fn);
     }
 
+
+//    @Override
+//    public GuestbookDTO read(Long gno) {
+//        Optional<Guestbook> result = repository.findById(gno);
+//        return result.isPresent()? entityToDTO(result.get()): null;
+//
+//    }
+
+//    @Override
+//    public void remove(Long gno) {
+//        repository.deleteById(gno);
+//    }
+
+
+
+
+    @Transactional
     @Override
-    public void remove(Long gno) {
+    public void removeWithReplies(Long gno){
+        replyRepository.deleteByGno(gno);
         repository.deleteById(gno);
     }
 
@@ -107,4 +133,5 @@ public class GuestbookServiceImpl implements GuestbookService{
         booleanBuilder.and(conditionBuilder);
         return booleanBuilder;
     }
+
 }

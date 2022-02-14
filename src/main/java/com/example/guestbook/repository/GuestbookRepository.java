@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.List;
 
 public interface GuestbookRepository extends JpaRepository<Guestbook, Long>, QuerydslPredicateExecutor<Guestbook> {
@@ -29,5 +30,5 @@ public interface GuestbookRepository extends JpaRepository<Guestbook, Long>, Que
     "FROM Guestbook g LEFT JOIN g.writer w "+
     "LEFT OUTER JOIN Reply r ON r.guestbook = g "+
             " WHERE g.gno = :gno")
-    Object getBoardByGno(@Param("gno") Long gno);
+    Object getGuestbookByGno(@Param("gno") Long gno);
 }
