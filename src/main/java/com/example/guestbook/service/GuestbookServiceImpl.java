@@ -56,8 +56,12 @@ public class GuestbookServiceImpl implements GuestbookService{
 //
 //        BooleanBuilder booleanBuilder = getSearch(requestDTO);
         Function<Object[], GuestbookDTO> fn = (en ->entityToDTO((Guestbook)en[0], (Member)en[1], (Long)en[2]));
-        Page<Object[]> result = repository.getGuestbookWithReplyCount(requestDTO.getPageable(Sort.by("gno").descending()));
-
+        //Page<Object[]> result = repository.getGuestbookWithReplyCount(requestDTO.getPageable(Sort.by("gno").descending()));
+        Page<Object[]> result = repository.searchPage(
+                requestDTO.getType(),
+                requestDTO.getKeyword(),
+                requestDTO.getPageable(Sort.by("gno").descending())
+        );
 
         return new PageResultDTO<>(result, fn);
     }
