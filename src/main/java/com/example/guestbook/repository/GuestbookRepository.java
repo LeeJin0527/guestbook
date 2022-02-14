@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface GuestbookRepository extends JpaRepository<Guestbook, Long>, QuerydslPredicateExecutor<Guestbook> {
+public interface GuestbookRepository extends JpaRepository<Guestbook, Long>, SearchGuestbookRepository {
     @Query("select g, w from Guestbook g left  join g.writer w where g.gno =:gno")
     Object getGuestbookWithWriter(@Param("gno") Long gno);
 
