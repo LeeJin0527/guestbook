@@ -32,5 +32,5 @@
 
 
 
-## API LIST
+## API LIST(swagger 이용)
 <img width="1426" alt="스크린샷 2022-02-15 오후 7 20 35" src="https://user-images.githubusercontent.com/64263694/154042097-ccfda007-1a4b-4451-9393-9fa56a30272d.png">
