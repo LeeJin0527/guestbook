@@ -45,6 +45,22 @@
         <a th:href="@{/guestbook/list(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
             <button type="button" class="btn btn-info">List</button>
         </a>
+        <div class="mt-4">
+            <h5><span class="badge badge-secondary replyCount"> Reply Count[[${dto.replyCount}]]</span></h5>
+        </div>
+        <div class="list-group replyList"></div>
+        <script th:inline="javascript">
+            $(document).ready(function (){
+                var bno = [[${dto.gno}]];
+                var listGroup = $(".replyList");
+
+                $(".replyCount").click(function(){
+                    $.getJSON('/replies/guestbook/' + gno, function(arr){
+                        console.log(arr);
+                    })
+                })
+            });                                  
+        </script>
 
     </th:block>
 
